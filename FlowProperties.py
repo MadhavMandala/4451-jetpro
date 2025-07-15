@@ -12,4 +12,3 @@ class FlowProperties:
         self.specific_heat_capacity = np.nan
         self.enthalpy = np.nan
         self.stagnation_enthalpy = np.nan
-
