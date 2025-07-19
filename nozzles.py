@@ -1,6 +1,38 @@
 import numpy
 import math
 
+def turbineMixer(T051,P051,T03,b,f):
+
+    MW = 28.9
+    P051 = P051 * 1000
+
+    # Finds Cp/R for the turbine exhaust air
+    CpoRt = 3.43 + 0.78 * (T051 / 1000) ** 2 - 0.27 * (T051 / 1000) ** 3
+
+    # Finds Cp/R for the compressor exhaust air
+    CpoRc = 3.7 + 0.78 * (T03 / 1000) ** 2 - 0.36 * (T03 / 1000) ** 3
+
+    # Finds R
+    R = 8314.462618 / MW
+
+    # Finds Cp for the turbine exhaust air
+    Cpt = CpoRt * R
+
+    # Finds Cp for the compressor exhaust air
+    Cpc = CpoRc * R
+
+    # Finds stagnation temp coming out of mixer
+    T051m = ( (b * Cpc * T03 + (1-b) * (1+f) * Cpt * T051) / (b * Cpc + (1-b) * (1+f) * Cpt) )
+
+    # Finds reversible stagnation pressure coming out of the mixer
+    exp1 = b / ( b + 1 + f )
+    exp2 = ( 1 + f ) / ( b + 1 + f)
+    P051m = (P051 ** exp1) * (P051 ** exp2) * ((T051m/T051) ** (exp2 * CpoRt)) * ((T051m/T03) ** (exp1 * CpoRc))
+
+    P051m = P051m / 1000
+
+    return T051m, P051m
+
 # Nozzle Mixer: Feeds into the core nozzle
 def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
 
@@ -35,14 +67,14 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
     T07 = ( ((1-sigma) * beta * Cps * T02) + ((1+f+fab) * Cpc * T06) ) / ( ((1-sigma) * beta * Cps) + ((1+f+fab) * Cpc) )
 
     # Finds reversible stagnation pressure coming out of the mixer
-    exp1 = ((1-sigma) * beta) / ((1-sigma) * beta + 1 + f + fab)
-    exp2 = (1 + f + fab) / ((1-sigma) * beta + 1 + f + fab)
+    exp1 = ((1-sigma) * beta) / ( ((1-sigma) * beta) + 1 + f + fab )
+    exp2 = (1 + f + fab) / (((1-sigma) * beta) + 1 + f + fab)
     P07rev = (P02 ** exp1) * (P06 ** exp2) * ((T07/T06) ** (exp2 * CpoRc)) * ((T07/T02) ** (exp1 * CpoRs))
 
     # Finds adjusted stagnation pressure coming out of mixer
     Cnm = 2
     mdot1 = (1-sigma) * beta
-    mdot2 = 1 + f
+    mdot2 = 1 + f + fab
 
     if (mdot1 < mdot2):
         mr = mdot2 / mdot1
@@ -118,11 +150,32 @@ def nozzle(T07, P07, T02, P02, Pa, sigma):
 
     return Te, ue, Me, Tef, uef, Mef
     
-T07, P07 = nozzleMixer(1403,126.9,289.2,26.96,11,0.72,1.5,0.025,0.005)
-#T07 = 1403
-#P07 = 126900
+
+T06 = 1403
+P06 = 126.9
 T02 = 289.2
 P02 = 26.96
 Pa = 11
 sigma = 0.72
+beta = 1.5
+f = 0.025
+fab = 0.005
+
+T07, P07 = nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab)
+#print(nozzleMixer(1403,126.9,289.2,26.96,11,0.72,1.5,0.025,0.005))
+
+T07 = 1403
+P07 = 126.9
+T02 = 289.2
+P02 = 26.96
+Pa = 11
+sigma = 1
 print(nozzle(T07, P07, T02, P02, Pa, sigma))
+
+
+T051 = 1312
+P051 = 140.6
+T03 = 657.9
+b = 0.06
+f = 0.025
+#print(turbineMixer(T051,P051,T03,b,f))
