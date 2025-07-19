@@ -1,12 +1,16 @@
+import numpy
 import math
 
 # Nozzle Mixer: Feeds into the core nozzle
-def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f):
+def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
 
     MW = 28.9
+    P06 = P06 * 1000
+    P02 = P02 * 1000
+    Pa = Pa * 1000
 
     # Finds estimated nozzle mixer output temp if both flows had the same Cp/R
-    T07p = ((1-sigma) * beta * T02 + (1+f) * T06) / ((1-sigma) * beta + (1+f))
+    T07p = ( ( (1-sigma) * beta * T02 ) + ( (1+f+fab) * T06 ) ) / ( ((1-sigma) * beta) + (1+f+fab))
 
     # Finds T0 bar for the core and bypass
     T0bc = (T06 + T07p) / 2
@@ -19,7 +23,7 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f):
     CpoRs = 3.43 + 0.79 * (T0bby / 1000) ** 2 - 0.28 * (T0bby / 1000) ** 3
 
     # Finds R
-    R = 8314 / MW
+    R = 8314.462618 / MW
 
     # Finds Cp for the core air
     Cpc = CpoRc * R
@@ -28,19 +32,19 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f):
     Cps = CpoRs * R
 
     # Finds stagnation temp coming out of mixer
-    T07 = ((1-sigma) * beta * Cps * T02 + (1+f) * Cpc * T06) / ((1-sigma) * beta * Cps + (1+f) * Cpc)
+    T07 = ( ((1-sigma) * beta * Cps * T02) + ((1+f+fab) * Cpc * T06) ) / ( ((1-sigma) * beta * Cps) + ((1+f+fab) * Cpc) )
 
     # Finds reversible stagnation pressure coming out of the mixer
-    exp1 = ((1-sigma) * beta) / ((1-sigma) * beta + 1 + f)
-    exp2 = (1 + f) / ((1-sigma) * beta + 1 + f)
-    P07rev = (P02 ** exp1) * (P06 ** exp2) * ((T07/T06) ** (exp2 * CpoRc)) * ((T07/T06) ** (exp1 * CpoRs))
+    exp1 = ((1-sigma) * beta) / ((1-sigma) * beta + 1 + f + fab)
+    exp2 = (1 + f + fab) / ((1-sigma) * beta + 1 + f + fab)
+    P07rev = (P02 ** exp1) * (P06 ** exp2) * ((T07/T06) ** (exp2 * CpoRc)) * ((T07/T02) ** (exp1 * CpoRs))
 
     # Finds adjusted stagnation pressure coming out of mixer
     Cnm = 2
     mdot1 = (1-sigma) * beta
     mdot2 = 1 + f
 
-    if (mdot1 > mdot2):
+    if (mdot1 < mdot2):
         mr = mdot2 / mdot1
     else:
         mr = mdot1 / mdot2
@@ -48,6 +52,8 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f):
     Prnm = math.e ** (-Cnm / (1 + mr ** 0.5))
 
     P07 = P07rev * Prnm
+
+    P07 = P07 / 1000
 
     return T07, P07
 
@@ -57,17 +63,21 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f):
 #   Nozzle method. Input T06, P06, T02, P02, sigma, and Pa to find Te, ue, Me, Tef, uef, Mef
 def nozzle(T07, P07, T02, P02, Pa, sigma):
 
+    P07 = P07 * 1000
+    P02 = P02 * 1000
+    Pa = Pa * 1000
+
     # Core Values
     MWc = 28.9
     CpoRc = 3.45 + 0.55*(T07/1000)**2 - 0.15*(T07/1000)**3
-    Rc = 8314 / MWc
+    Rc = 8314.462618 / MWc
     etanc = 0.96
     Cpc = CpoRc * Rc
 
     # Bypass Values
     MWs = 28.9
     CpoRs = 3.5
-    Rs = 8314 / MWs
+    Rs = 8314.462618 / MWs
     etans = 0.97
     Cps = CpoRs * Rs
 
@@ -104,13 +114,15 @@ def nozzle(T07, P07, T02, P02, Pa, sigma):
     # BYPASS Finds exit Mach number using above info
     Mef = uef / (gammas * Rs * Tef)**0.5
 
+
+
     return Te, ue, Me, Tef, uef, Mef
     
-
-T07 = 1403
-P07 = 126900
+T07, P07 = nozzleMixer(1403,126.9,289.2,26.96,11,0.72,1.5,0.025,0.005)
+#T07 = 1403
+#P07 = 126900
 T02 = 289.2
-P02 = 26960
-Pa = 11000
-sigma = 1
+P02 = 26.96
+Pa = 11
+sigma = 0.72
 print(nozzle(T07, P07, T02, P02, Pa, sigma))

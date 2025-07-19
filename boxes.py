@@ -1,8 +1,8 @@
 import numpy as np
-import sympy as sp
-import matplotlib
+#import sympy as sp
+#import matplotlib
 
-T = sp.symbols('T')
+#T = sp.symbols('T')
 
 def diffuser(ta, pa, M, n, cp_R):
     gamma = cp_R/(cp_R-1)
@@ -92,3 +92,4 @@ def nozzleMixer():
 
 
 """
+print(compressor(289.2,26960,0.6,0.06,3.62,15))
