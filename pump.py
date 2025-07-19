@@ -1,4 +1,4 @@
-def pump(pa, pc, f):
+def pump(pa, pc, f, f_ab):
     rho = 780
     dpf = 20.7
     dpinj = 572
@@ -6,7 +6,7 @@ def pump(pa, pc, f):
     p_in = pa + dpf
     p_out = pc + dpinj
     dp = p_out - p_in
-    w = dp * f / eta / rho
+    w = dp * (f + f_ab) / eta / rho
     return w
 
-print(pump(11, 26.96, 0.025))
+# print(pump(11, 404.4, 0.025, 0.005))
