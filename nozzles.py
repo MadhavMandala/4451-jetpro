@@ -76,7 +76,7 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
     mdot1 = (1-sigma) * beta
     mdot2 = 1 + f + fab
 
-    if ((mdot1 < mdot2) & (mdot1 > 1)):
+    if ((mdot1 < mdot2) & (mdot1 > 0)):
         mr = mdot2 / mdot1
         Prnm = math.e ** (-Cnm / (1 + mr ** 0.5))
 
@@ -171,7 +171,7 @@ T02 = 289.2
 P02 = 26.96
 Pa = 11
 sigma = 1
-# print(nozzle(T07, P07, T02, P02, Pa, sigma))
+print(nozzle(T07, P07, T02, P02, Pa, sigma))
 
 
 T051 = 1312
