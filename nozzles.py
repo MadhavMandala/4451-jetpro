@@ -26,7 +26,7 @@ def turbineMixer(T051,P051,T03,b,f):
 
     # Finds reversible stagnation pressure coming out of the mixer
     exp1 = b / ( 1 + f )
-    exp2 = ( 1 + f - b) / ( 1 + f )
+    exp2 = ( 1 + f - b ) / ( 1 + f )
     P051m = (P051 ** exp1) * (P051 ** exp2) * ((T051m/T051) ** (exp2 * CpoRt)) * ((T051m/T03) ** (exp1 * CpoRc))
 
     P051m = P051m / 1000
