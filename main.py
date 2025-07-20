@@ -28,14 +28,14 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
     T_051m, p_051m = turbineMixer(T_051, p_051 / 1000, T_03, b, f)
     print("Turbine Mixer: T_051m = {:.4f} K, p_051m = {:.4f} Pa".format(T_051m, p_051m * 1000))
 
-    p_052, T_052 = fan_turbine(p_051m * 1000, T_051m, w_f, f)
+    p_052, T_052 = fan_turbine(p_051m * 1000, T_051m, w_f * 1000, f)
     print("Fan Turbine: p_052 = {:.4f} Pa, T_052 = {:.4f} K".format(p_052, T_052))
 
     p_06, T_06, f_ab = afterburner(p_052, T_052, f, f_ab)
     print("Afterburner: p_06 = {:.4f} Pa, T_06 = {:.4f} K, f_ab = {:.4f}".format(p_06, T_06, f_ab))
 
     T_07, p_07 = nozzleMixer(T_06, p_06 / 1000, T_02, p_02 / 1000, p_a, sigma, Beta, f, f_ab)
-    print("Nozzle: p_07 = {:.4f} Pa, T_07 = {:.4f} K".format(p_07 * 1000, T_07))
+    print("Nozzle Mixer: p_07 = {:.4f} Pa, T_07 = {:.4f} K".format(p_07 * 1000, T_07))
 
 simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 1, 0.025, 0.005)
 
