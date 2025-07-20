@@ -171,7 +171,7 @@ T02 = 289.2
 P02 = 26.96
 Pa = 11
 sigma = 1
-print(nozzle(T07, P07, T02, P02, Pa, sigma))
+#print(nozzle(T07, P07, T02, P02, Pa, sigma))
 
 
 T051 = 1312
@@ -180,3 +180,5 @@ T03 = 657.9
 b = 0.06
 f = 0.025
 #print(turbineMixer(T051,P051,T03,b,f))
+
+print(nozzleMixer(1403, 126.9, 289.2, 26.96,11,0.72,1.5,0.025,0.005))
