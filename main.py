@@ -3,7 +3,7 @@ from compressor import fan, compressor
 from burner import burner, afterburner
 from turbine import turbine, fan_turbine
 from pump import pump
-from nozzles import *
+from nozzles import turbineMixer, nozzleMixer, nozzle
 
 def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
 
@@ -19,8 +19,8 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
     p_04, T_04, f = burner(p_03, T_03, f, b)
     print("Burner: p_04 = {:.4f} Pa, T_04 = {:.4f} K".format(p_04, T_04))
 
-    p_p, w_p = pump(p_a / 1000, p_03 / 1000, f, f_ab)
-    print("Pump: p_p = {:.4f} KPa, w_p = {:.4f} kg/s".format(p_p, w_p))
+    p_f1, p_f2, w_p = pump(p_a / 1000, p_03 / 1000, f, f_ab)
+    print("Pump: p_f1 = {:.4f} KPa, p_f2 = {:.4f} KPa, w_p = {:.4f} kg/s".format(p_f1, p_f2, w_p))
 
     p_051, T_051 = turbine(p_04, T_04, b, (w_c + w_p) * 1000, f)
     print("Turbine: p_05 = {:.4f} Pa, T_05 = {:.4f} K".format(p_051, T_051))
