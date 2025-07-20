@@ -3,7 +3,7 @@ from compressor import fan, compressor
 from burner import burner, afterburner
 from turbine import turbine, fan_turbine
 from pump import pump
-from nozzles import *
+from nozzles import turbineMixer, nozzleMixer, nozzle
 
 def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
 
