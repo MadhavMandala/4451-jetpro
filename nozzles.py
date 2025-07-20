@@ -22,7 +22,7 @@ def turbineMixer(T051,P051,T03,b,f):
     Cpc = CpoRc * R
 
     # Finds stagnation temp coming out of mixer
-    T051m = ( (b * Cpc * T03 + (1-b) * (1+f) * Cpt * T051) / (b * Cpc + (1-b) * (1+f) * Cpt) )
+    T051m = ( (b * Cpc * T03 + (1-b+f) * (1+f) * Cpt * T051) / (b * Cpc + (1-b+f) * (1+f) * Cpt) )
 
     # Finds reversible stagnation pressure coming out of the mixer
     exp1 = b / ( b + 1 + f )
