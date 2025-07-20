@@ -1,9 +1,9 @@
 Ian:
-- [ ] Fan
-- [ ] Afterburner
-- [ ] Turbine
-- [ ] Fan Turbine
-- [ ] Pump
+- [x] Fan
+- [x] Afterburner
+- [x] Turbine
+- [x] Fan Turbine
+- [x] Pump
 
 Julian:
 - [ ] Core Nozzle
