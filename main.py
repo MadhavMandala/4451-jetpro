@@ -37,6 +37,10 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
     T_07, p_07 = nozzleMixer(T_06, p_06 / 1000, T_02, p_02 / 1000, p_a, sigma, Beta, f, f_ab)
     print("Nozzle Mixer: p_07 = {:.4f} Pa, T_07 = {:.4f} K".format(p_07 * 1000, T_07))
 
+    T_e, u_e, M_e, T_ef, u_ef, M_ef = nozzle(T_07, p_07 / 1000, T_02, p_02 / 1000, p_a / 1000, sigma)
+    print("Nozzle: T_e = {:.4f} K, u_e = {:.4f} m/s, M_e = {:.4f}, T_ef = {:.4f} K, u_ef = {:.4f} m/s, M_ef = {:.4f}".format(
+        T_e, u_e, M_e, T_ef, u_ef, M_ef))
+
 simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 1, 0.025, 0.005)
 
 # import numpy as np
