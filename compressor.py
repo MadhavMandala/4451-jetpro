@@ -19,3 +19,21 @@ def fan(p_0, T_0, Pr, Beta):
     # and the fan specific work in kJ/kg.
 
 # print(fan(22.4639, 273.24, 1.2, 1.5))
+
+def compressor(p_0, T_0, Pr):
+    if Pr == 1:
+        return p_0, T_0, 0
+    
+    eta_p = 0.91
+    mw = 28.9
+    R = 8314.5 / mw
+    C_p = 3.62 * R
+
+    p_0_exit = p_0 * Pr
+    Tr = Pr ** (R / C_p / eta_p)
+    T_0_exit = T_0 * Tr
+
+    w = C_p * (T_0_exit - T_0) * (1) / 1000
+    return p_0_exit, T_0_exit, w
+
+# print(compressor(26956.68, 289.15767609413706, 15))
