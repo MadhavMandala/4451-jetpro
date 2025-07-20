@@ -7,10 +7,10 @@ def turbineMixer(T051,P051,T03,b,f):
     P051 = P051 * 1000
 
     # Finds Cp/R for the turbine exhaust air
-    CpoRt = 3.43 + 0.78 * (T051 / 1000) ** 2 - 0.27 * (T051 / 1000) ** 3
+    CpoRt = 3.43 + 0.780 * (T051 / 1000) ** 2 - 0.270 * (T051 / 1000) ** 3
 
     # Finds Cp/R for the compressor exhaust air
-    CpoRc = 3.7 + 0.78 * (T03 / 1000) ** 2 - 0.36 * (T03 / 1000) ** 3
+    CpoRc = 3.70 + 0.780 * (T03 / 1000) ** 2 - 0.360 * (T03 / 1000) ** 3
 
     # Finds R
     R = 8314.462618 / MW
@@ -22,11 +22,11 @@ def turbineMixer(T051,P051,T03,b,f):
     Cpc = CpoRc * R
 
     # Finds stagnation temp coming out of mixer
-    T051m = ( (b * Cpc * T03 + (1-b+f) * (1+f) * Cpt * T051) / (b * Cpc + (1-b+f) * (1+f) * Cpt) )
+    T051m = ( (b * Cpc * T03 + (1-b+f) * Cpt * T051) / (b * Cpc + (1-b+f) * Cpt) )
 
     # Finds reversible stagnation pressure coming out of the mixer
-    exp1 = b / ( b + 1 + f )
-    exp2 = ( 1 + f ) / ( b + 1 + f)
+    exp1 = b / ( 1 + f )
+    exp2 = ( 1 + f - b) / ( 1 + f )
     P051m = (P051 ** exp1) * (P051 ** exp2) * ((T051m/T051) ** (exp2 * CpoRt)) * ((T051m/T03) ** (exp1 * CpoRc))
 
     P051m = P051m / 1000
@@ -76,14 +76,15 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
     mdot1 = (1-sigma) * beta
     mdot2 = 1 + f + fab
 
-    if (mdot1 < mdot2):
+    if ((mdot1 < mdot2) & (mdot1 > 1)):
         mr = mdot2 / mdot1
+        Prnm = math.e ** (-Cnm / (1 + mr ** 0.5))
+
+        P07 = P07rev * Prnm
     else:
         mr = mdot1 / mdot2
+        P07 = P07rev
 
-    Prnm = math.e ** (-Cnm / (1 + mr ** 0.5))
-
-    P07 = P07rev * Prnm
 
     P07 = P07 / 1000
 
