@@ -1,7 +1,7 @@
 Future:
-- [ ] Integrate all functions into a single function
-- [ ] Verify seperate nozzle test case
-- [ ] Verify sigma = 0.72 test case
+- [x] Integrate all functions into a single function
+- [x] Verify seperate nozzle test case
+- [x] Verify sigma = 0.72 test case
 - [ ] Write an optimizable version of the code
 - [ ] Write an optimizer
 
@@ -16,8 +16,8 @@ Julian:
 - [x] Core Nozzle
 - [x] Mixed Nozzle
 - [x] Bypass Nozzle
-- [-] Mixer
-- [-] Turbine Mixer
+- [x] Mixer
+- [x] Turbine Mixer
 
 Mahdav:
 - [x] Diffuser
