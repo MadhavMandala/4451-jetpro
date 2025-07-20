@@ -1,4 +1,6 @@
 def afterburner(p_0, T_0, f, f_ab):
+    # Accepts the fan turbine exit stagnation pressure (Pa) and temperature (K),
+    # the fuel-to-air ratio, and the afterburner fuel-to-air ratio.
     if f_ab == 0:
         return p_0, T_0, f_ab
  
@@ -19,5 +21,7 @@ def afterburner(p_0, T_0, f, f_ab):
         f_ab = (T_0_exit/T_0 - 1) / ((eta*dhr/C_p/T_0) - T_0_exit/T_0)
 
     return p_0_exit, T_0_exit, f_ab
+    # Returns the stagnation pressure (Pa), stagnation temperature (K), 
+    # and afterburner fuel-to-air ratio.
 
 # print(afterburner(130800, 1242, 0.025, 0.005))
