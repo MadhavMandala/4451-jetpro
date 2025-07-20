@@ -15,4 +15,4 @@ def diffuser(p_a, T_a, M):
 
     return p_0_exit, T_0_exit
 
-print(diffuser(11000, 220, 1.1))
+# print(diffuser(11000, 220, 1.1))

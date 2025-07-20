@@ -16,8 +16,8 @@ Julian:
 - [x] Core Nozzle
 - [x] Mixed Nozzle
 - [x] Bypass Nozzle
-- [x] Mixer
-- [x] Turbine Mixer
+- [-] Mixer
+- [-] Turbine Mixer
 
 Mahdav:
 - [x] Diffuser
