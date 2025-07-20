@@ -13,6 +13,6 @@ Julian:
 - [x] Turbine Mixer
 
 Mahdav:
-- [ ] Diffuser
-- [ ] Compressor
-- [ ] Burner
+- [x] Diffuser
+- [x] Compressor
+- [x] Burner
