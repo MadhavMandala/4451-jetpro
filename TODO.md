@@ -6,11 +6,11 @@ Ian:
 - [x] Pump
 
 Julian:
-- [ ] Core Nozzle
-- [ ] Mixed Nozzle
-- [ ] Bypass Nozzle
-- [ ] Mixer
-- [ ] Turbine Mixer
+- [x] Core Nozzle
+- [x] Mixed Nozzle
+- [x] Bypass Nozzle
+- [x] Mixer
+- [x] Turbine Mixer
 
 Mahdav:
 - [ ] Diffuser
