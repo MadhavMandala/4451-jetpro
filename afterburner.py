@@ -20,4 +20,4 @@ def afterburner(p_0, T_0, f, f_ab):
 
     return p_0_exit, T_0_exit, f_ab
 
-print(afterburner(130800, 1242, 0.025, 0.005))
+# print(afterburner(130800, 1242, 0.025, 0.005))
