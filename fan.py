@@ -1,4 +1,7 @@
 def fan(p_0, T_0, Pr, Beta):
+    if Beta == 0:
+        return p_0, T_0, 0
+    
     eta_p = 0.92
     mw = 28.9
     R = 8314.5 / mw
@@ -13,4 +16,4 @@ def fan(p_0, T_0, Pr, Beta):
     w = C_p * (T_0_exit - T_0) * (1 + Beta) / 1000
     return p_0_exit, T_0_exit, w
 
-# print(fan(22.460, 273.2, 1.2, 1.5))
+print(fan(22.460, 273.2, 1.2, 1.5))
