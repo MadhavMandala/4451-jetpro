@@ -1,3 +1,10 @@
+Future:
+- [ ] Integrate all functions into a single function
+- [ ] Verify seperate nozzle test case
+- [ ] Verify sigma = 0.72 test case
+- [ ] Write an optimizable version of the code
+- [ ] Write an optimizer
+
 Ian:
 - [x] Fan
 - [x] Afterburner
