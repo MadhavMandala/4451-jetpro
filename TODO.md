@@ -2,6 +2,7 @@ Future:
 - [x] Integrate all functions into a single function
 - [x] Verify seperate nozzle test case
 - [x] Verify sigma = 0.72 test case
+- [ ] Calculate performance parameters
 - [ ] Write an optimizable version of the code
 - [ ] Write an optimizer
 
