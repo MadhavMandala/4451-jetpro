@@ -40,6 +40,17 @@ def compressor(t0i, p0i, b, pr):
     work = (cp_R * 8314.462/28.9) * (t0o - t0i)
     return np.array([t0o, p0o, work])
 
+def pump(pa, pc, f, f_ab):
+    rho = 780
+    dpf = 20.7
+    dpinj = 572
+    n = 0.48
+    p_in = pa + dpf
+    p_out = pc + dpinj
+    dp = p_out - p_in
+    work = dp * (f + f_ab) / n / rho
+    return np.array([p_in, p_out, work])
+
 def burner(t0i, p0i, f, m):
     n = 0.99
     cp_R = 3.7 + .66*(t0i/1000)**2 - 0.2*(t0i/1000)**3
@@ -63,14 +74,15 @@ def turbine(t0i, p0i, f, b, work):
     return np.array([t0o, p0o])
 
 def turbineMixer(t0i1, p0i1, t0i2, p0i2, m1, m2):
-    cp_R1 = 3.70 + 0.78*(t0i1/1000)**2 - 0.36*(t0i1/1000)**3
-    cp_R2 = 3.43 + 0.78*(t0i2/1000)**2 - 0.27*(t0i2/1000)**3
+    cp_R1 = 3.43 + 0.78*(t0i1/1000)**2 - 0.27*(t0i1/1000)**3
+    cp_R2 = 3.70 + 0.78*(t0i2/1000)**2 - 0.36*(t0i2/1000)**3
     
-    cp1 = cp_R1 * 8314.462/28.9
-    cp2 = cp_R2 * 8314.462/28.9
+    cp1 = cp_R1 * 8314.462618/28.9
+    cp2 = cp_R2 * 8314.462618/28.9
     t0e = (m2*cp2*t0i2 + m1*cp1*t0i1)/(m2*cp2 + m1*cp1)
-    p0e = p0i1**(m1/(m1+m2)) * p0i2**(m2/(m1+m2)) * (t0e/t0i1)**(cp_R1 * (m1/(m1+m2))) * (t0e/t0i2)**(cp_R2 * (m2/(m1+m2)))
+    p0e = p0i1**(m1/(m1+m2)) * p0i1**(m2/(m1+m2)) * (t0e/t0i1)**(cp_R1 * (m1/(m1+m2))) * (t0e/t0i2)**(cp_R2 * (m2/(m1+m2)))
     return np.array([t0e, p0e])
+
 
 def fanturbine(t0i, p0i, f, b, work): #DOESNT WORK FIX
     n = 0.94
@@ -78,7 +90,7 @@ def fanturbine(t0i, p0i, f, b, work): #DOESNT WORK FIX
 
     cp = cp_R * 8314.462/28.9
     gamma = cp_R/(cp_R - 1)
-    t0o = t0i - work/cp/((1 + f - b))
+    t0o = t0i - work/cp/((1 + f))
     p0o = p0i * (t0o / t0i)**((gamma / (gamma-1)) / n)
     return np.array([t0o, p0o])
 
@@ -157,7 +169,7 @@ def performanceMetrics(ue1, ue2, M, ta, f, fab, beta, sigma, tmax_combustor, tma
 
     gamma = cp_R/(cp_R-1)
     u = M * (ta * gamma * 8314.462/28.9)**0.5
-    ST = (ue1 * (1+f+fab + beta*(1-sigma)) + ue2*beta*sigma - u) / 1000
+    ST = (ue1*(1+f+fab + beta*(1-sigma)) + ue2*beta*sigma - u*(1+beta)) / 1000
     TSFC = (f+fab)/ST * 3600
     n_p = ST*1000 * u / ((1+f+fab + beta*(1-sigma))*ue1**2 + (beta*sigma)*ue2**2 - u**2)
     n_o = ST*1000 * u / ((f + fab) * hr)
