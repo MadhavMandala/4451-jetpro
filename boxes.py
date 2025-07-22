@@ -40,14 +40,14 @@ def compressor(t0i, p0i, b, pr):
     work = (cp_R * 8314.462/28.9) * (t0o - t0i)
     return np.array([t0o, p0o, work])
 
-def burner(t0i, p0i, f):
+def burner(t0i, p0i, f, m):
     n = 0.99
-    cp_R = 3.7 + .66*(t0i/1000)**2 - 0.2*(t0i/1000)**34
+    cp_R = 3.7 + .66*(t0i/1000)**2 - 0.2*(t0i/1000)**3
     hr = 43520000
     pr = 0.95
 
     cp = cp_R * 8314.462/28.9
-    t0o = (n*f*hr/cp + t0i)/(1+f)
+    t0o = (n*f*hr/cp + m*t0i)/(m+f)
     p0o = p0i * pr
     return np.array([t0o, p0o])
 
@@ -151,7 +151,7 @@ def combinednozzle(t0i, p0i, pa):
     return np.array([te, ue, Me])
 
 
-def performanceMetrics(ue1, ue2, M, ta, f, fab, beta, sigma):
+def performanceMetrics(ue1, ue2, M, ta, f, fab, beta, sigma, tmax_combustor, tmax_afterburner):
     cp_R = 3.5
     hr = 43520000
 
@@ -162,4 +162,6 @@ def performanceMetrics(ue1, ue2, M, ta, f, fab, beta, sigma):
     n_p = ST*1000 * u / ((1+f+fab + beta*(1-sigma))*ue1**2 + (beta*sigma)*ue2**2 - u**2)
     n_o = ST*1000 * u / ((f + fab) * hr)
     n_th = ((1+f+fab + beta*(1-sigma))*ue1**2 + (beta*sigma)*ue2**2 - u**2) / ((f+fab)*hr)
-    return np.array([ST, TSFC, n_th, n_p, n_o])
+    peakT_c = tmax_combustor
+    peakT_ab = tmax_afterburner
+    return np.array([ST, TSFC, n_th, n_p, n_o, peakT_c, peakT_ab])

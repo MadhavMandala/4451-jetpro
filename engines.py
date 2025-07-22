@@ -6,16 +6,16 @@ from boxes import *
 #EXAMPLE CASE WE WERE GIVEN IN TERMS OF SETUP
 def turbofan_afterburner_separate(ta, pa, M, Prc, Prf, f, fab, b, beta, sigma):
     s01 = diffuser(ta, pa, M)
-    s02 = fan(s01[0], s01[1], Prf)
-    s03 = compressor(s02[0], s02[1], Prc)
-    s04 = burner(s03[0], s03[1], f)
+    s02 = fan(s01[0], s01[1], 0, Prf)
+    s03 = compressor(s02[0], s02[1], b, Prc)
+    s04 = burner(s03[0], s03[1], f, 1-b)
     s05_1 = turbine(s04[0], s04[1], f, b, s03[2])
     s05_m = turbineMixer(s05_1[0], s05_1[1], s03[0], s05_1[1], (1+f-b), b)
     s05_2 = fanturbine(s05_m[0], s05_m[1], f, 0, s02[2]*(beta+1))
     s06 = afterburner(s05_2[0], s05_2[1], fab, 1+f)
     s0e = corenozzle(s06[0], s06[1], pa)
     s0ef = fannozzle(s02[0], s02[1], pa)
-    pm = performanceMetrics(s0e[0], s0ef[0], M, ta, f, fab, beta, 1)
+    pm = performanceMetrics(s0e[0], s0ef[0], M, ta, f, fab, beta, 1, s04[0], s06[0])
     return pm
 
 def turbofan_separate(ta, pa, M, Prc, Prf, f, fab, b, beta, sigma):
