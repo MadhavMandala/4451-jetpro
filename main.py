@@ -17,55 +17,6 @@ beta      = 1.5   # bypass ratio (β = ṁ_s / ṁ_a)
 b         = 0.06   # bleed ratio (b = ṁ_b / ṁ_a)
 sigma     = 0.72   # split ratio (fraction of bypass air to fan nozzle)
 
-# Component / flow properties (arrays or dicts keyed by component index/name as needed)
-T = sp.symbols('T')
-cp_R = {
-    "d" : 3.5,
-    "f" : 3.5,
-    "c" : 3.62,
-    "b" : 3.7 + .66*(T/1000)**2 - 0.2*(T/1000)**3,
-    "t" : 3.38 + 0.7*(T/1000)**2 - 0.2*(T/1000)**3,
-    "tmh" : 3.70 + 0.78*(T/1000)**2 - 0.36*(T/1000)**3,
-    "tmc" : 3.43 + 0.78*(T/1000)**2 - 0.27*(T/1000)**3,
-    "ft" : 3.4 + 0.63*(T/1000)**2 - 0.2*(T/1000)**3,
-    "ab" : 3.5 + 0.72*(T/1000)**2 - 0.210*(T/1000)**3,
-    "n" : 3.45 + 0.55*(T/1000)**2 - 0.15*(T/1000)**3,
-    "fn" : 3.5 * T/T,
-    "nm1" : 3.44 + 0.79*(T/1000)**2 - 0.27*(T/1000)**3,
-    "nm2" : 3.43 + 0.79*(T/1000)**2 - 0.28*(T/1000)**3,
-    "cn" : 3.45 + 0.550*(T/1000.0)**2 - 0.150*(T/1000.0)**3,
-    "p" : 0
-} 
-
-W = 28.9   # molecular weights Wi for each component
-
-
-# Efficiencies
-n = {
-    "d" : .94,
-    "f" : .92,
-    "c" : .91,
-    "b" : .99,
-    "t" : .94,
-    "tm" : 0,
-    "ft" : .94,
-    "ab" : .96,
-    "n" : .96,
-    "fn" : .97,
-    "nm" : 0,
-    "cn" : .96,
-    "p" : .48
-} 
-
-# Fuel properties
-delta_h_R = 43520000   # fuel heating value (J/kg)
-Prb = 0.95
-Prab = 0.97
-rho_f     = 0.0   # fuel density (kg/m³)
-
-# Loss functions
-delta_d   = 0.0   # specific drag loss associated with bypass fan
-Pr_nm     = 0.0   # pressure loss function for virtual nozzle mixer
 
 
 
