@@ -23,7 +23,8 @@ def optimize(T_a, p_a, M, ST, x0):
         x0,
         bounds=bounds,
         constraints=[Pr_const, Tb_const, Tb_ab_const, ST_const],
-        method='trust-constr'
+        method='SLSQP',
+        options={'maxiter': 2000, 'ftol': 1e-6}
     )
     print(res.message)
     outputs = vectorized_engine(res.x)
