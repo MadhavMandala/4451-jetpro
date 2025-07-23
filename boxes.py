@@ -168,7 +168,7 @@ def performanceMetrics(ue1, ue2, M, ta, f, fab, beta, sigma, tmax_combustor, tma
     hr = 43520000
 
     gamma = cp_R/(cp_R-1)
-    u = M * (ta * gamma * 8314.462/28.9)**0.5
+    u = M * np.sqrt(ta * gamma * 8314.462/28.9)
     ST = (ue1*(1+f+fab + beta*(1-sigma)) + ue2*beta*sigma - u*(1+beta)) / 1000
     TSFC = (f+fab)/ST * 3600
     n_p = ST*1000 * u / ((1+f+fab + beta*(1-sigma))*ue1**2 + (beta*sigma)*ue2**2 - u**2)

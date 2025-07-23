@@ -65,3 +65,8 @@ print(s0ec)
 
 pm2 = performanceMetrics(s0ec[1], s0ef[1], M, ta, f, fab, beta, sigma, s04[0], s06[0])
 print(pm2)
+
+
+print('.....................................................')
+
+print(performanceMetrics(1196, 357.2, 1.1, 220, 0.025, 0.005, 1.5, 1, 1, 1))
