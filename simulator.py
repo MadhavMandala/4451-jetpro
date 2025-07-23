@@ -84,7 +84,7 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
         "sigma": sigma
     }
 
-outputs = simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
+# outputs = simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
 # print(outputs)
 
 def performance_metrics(outputs):
@@ -103,10 +103,14 @@ def performance_metrics(outputs):
     outputs["eta_p"] = outputs["eta_o"] / outputs["eta_th"]
     return outputs
 
-outputs = performance_metrics(outputs)
-print("Performance Metrics:")
-print("Overall Efficiency (eta_o): {:.4f}".format(outputs["eta_o"]))    
-print("Thermal Efficiency (eta_th): {:.4f}".format(outputs["eta_th"]))
-print("Propulsive Efficiency (eta_p): {:.4f}".format(outputs["eta_p"]))
-print("Thrust Specific Fuel Consumption (TSFC): {:.4f} kg/(kN*s)".format(outputs["TSFC"]*1000*3600))
-print("Specific Thrust (ST): {:.4f} N*s/kg".format(outputs["ST"]))
+# outputs = performance_metrics(outputs)
+# print("Performance Metrics:")
+# print("Overall Efficiency (eta_o): {:.4f}".format(outputs["eta_o"]))    
+# print("Thermal Efficiency (eta_th): {:.4f}".format(outputs["eta_th"]))
+# print("Propulsive Efficiency (eta_p): {:.4f}".format(outputs["eta_p"]))
+# print("Thrust Specific Fuel Consumption (TSFC): {:.4f} kg/(kN*s)".format(outputs["TSFC"]*1000*3600))
+# print("Specific Thrust (ST): {:.4f} N*s/kg".format(outputs["ST"]))
+
+def inputs_to_metrics(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
+    outputs = simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab)
+    return performance_metrics(outputs)
