@@ -1,3 +1,4 @@
+
 import numpy as np
 import math
 
@@ -341,7 +342,7 @@ def burner(p_0, T_0, f, b):
 # print(burner(404350, 657.9, 0.025, 0.06))
 
 
-def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
+def simulate_turbofan_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
 
     p_01, T_01 = diffuser(p_a, T_a, M)
     # print("Diffuser: P_01 = {:.4f} Pa, T_01 = {:.4f} K".format(p_01, T_01))
@@ -424,6 +425,137 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
 # outputs = simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
 # print(outputs)
 
+
+def simulate_turbojet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
+
+    p_01, T_01 = diffuser(p_a, T_a, M)
+    # print("Diffuser: P_01 = {:.4f} Pa, T_01 = {:.4f} K".format(p_01, T_01))
+
+    p_03, T_03, w_c = compressor(p_01, T_01, Pr_c)
+    # print("Compressor: p_03 = {:.4f} Pa, T_03 = {:.4f} K".format(p_03, T_03))
+
+    p_04, T_04, f, T_max = burner(p_03, T_03, f, b)
+    # print("Burner: p_04 = {:.4f} Pa, T_04 = {:.4f} K".format(p_04, T_04))
+
+    p_f1, p_f2, w_p = pump(p_a / 1000, p_03 / 1000, f, f_ab)
+    # print("Pump: p_f1 = {:.4f} KPa, p_f2 = {:.4f} KPa, w_p = {:.4f} kg/s".format(p_f1, p_f2, w_p))
+
+    p_051, T_051 = turbine(p_04, T_04, b, (w_c + w_p) * 1000, f)
+    # print("Turbine: p_05 = {:.4f} Pa, T_05 = {:.4f} K".format(p_051, T_051))
+
+    p_06, T_06, f_ab, T_max_ab = afterburner(p_051, T_051, f, f_ab)
+    # print("Afterburner: p_06 = {:.4f} Pa, T_06 = {:.4f} K, f_ab = {:.4f}".format(p_06, T_06, f_ab))
+
+    T_e, u_e, M_e, T_ef, u_ef, M_ef = nozzle(T_06, p_06, 0, 0, p_a / 1000, sigma)
+    # print("Nozzle: T_e = {:.4f} K, u_e = {:.4f} m/s, M_e = {:.4f}, T_ef = {:.4f} K, u_ef = {:.4f} m/s, M_ef = {:.4f}".format(
+        # T_e, u_e, M_e, T_ef, u_ef, M_ef))
+    
+    return {
+        "T_01": T_01,
+        "p_01": p_01,
+        "T_02": 0,
+        "p_02": 0,
+        "T_03": T_03,
+        "p_03": p_03,
+        "T_04": T_04,
+        "p_04": p_04,
+        "p_f1": p_f1,
+        "p_f2": p_f2,
+        "T_051": T_051,
+        "p_051": p_051,
+        "T_051m": 0,
+        "p_051m": 0,
+        "T_052": 0,
+        "p_052": 0,
+        "T_06": T_06,
+        "p_06": p_06,
+        "T_07": 0,
+        "p_07": 0,
+        "T_e": T_e,
+        "u_e": u_e,
+        "M_e": M_e,
+        "T_ef": T_ef,
+        "u_ef": u_ef,
+        "M_ef": M_ef,
+        "f_ab": f_ab,
+        "f": f,
+        "w_f": 0,
+        "w_c": w_c,
+        "w_p": w_p,
+        "p_a": p_a,
+        "T_a": T_a,
+        "M": M,
+        "Pr_c": Pr_c,
+        "Pr_f": Pr_f,
+        "Beta": Beta,
+        "b": b,
+        "sigma": sigma,
+        "T_max": T_max,
+        "T_max_ab": T_max_ab
+    }
+
+
+
+def simulate_ramjet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
+
+    p_01, T_01 = diffuser(p_a, T_a, M)
+    # print("Diffuser: P_01 = {:.4f} Pa, T_01 = {:.4f} K".format(p_01, T_01))
+
+    p_04, T_04, f, T_max = burner(p_01, T_01, f, b)
+    # print("Burner: p_04 = {:.4f} Pa, T_04 = {:.4f} K".format(p_04, T_04))
+
+    p_06, T_06, f_ab, T_max_ab = afterburner(p_04, T_04, f, f_ab)
+    # print("Afterburner: p_06 = {:.4f} Pa, T_06 = {:.4f} K, f_ab = {:.4f}".format(p_06, T_06, f_ab))
+
+    T_e, u_e, M_e, T_ef, u_ef, M_ef = nozzle(T_06, p_06, 0, 0, p_a / 1000, sigma)
+    # print("Nozzle: T_e = {:.4f} K, u_e = {:.4f} m/s, M_e = {:.4f}, T_ef = {:.4f} K, u_ef = {:.4f} m/s, M_ef = {:.4f}".format(
+        # T_e, u_e, M_e, T_ef, u_ef, M_ef))
+    
+    return {
+        "T_01": T_01,
+        "p_01": p_01,
+        "T_02": 0,
+        "p_02": 0,
+        "T_03": 0,
+        "p_03": 0,
+        "T_04": T_04,
+        "p_04": p_04,
+        "p_f1": 0,
+        "p_f2": 0,
+        "T_051": 0,
+        "p_051": 0,
+        "T_051m": 0,
+        "p_051m": 0,
+        "T_052": 0,
+        "p_052": 0,
+        "T_06": T_06,
+        "p_06": p_06,
+        "T_07": 0,
+        "p_07": 0,
+        "T_e": T_e,
+        "u_e": u_e,
+        "M_e": M_e,
+        "T_ef": T_ef,
+        "u_ef": u_ef,
+        "M_ef": M_ef,
+        "f_ab": f_ab,
+        "f": f,
+        "w_f": 0,
+        "w_c": 0,
+        "w_p": 0,
+        "p_a": p_a,
+        "T_a": T_a,
+        "M": M,
+        "Pr_c": Pr_c,
+        "Pr_f": Pr_f,
+        "Beta": Beta,
+        "b": b,
+        "sigma": sigma,
+        "T_max": T_max,
+        "T_max_ab": T_max_ab
+    }
+
+
 def performance_metrics(outputs):
     u = outputs["M"] * np.sqrt(outputs["T_a"] * 8314.5 / 28.9644 * 1.4)
     delta_drag = 263 * outputs["M"]**2 * outputs["p_a"] / 100000 * outputs["Beta"]**1.5
@@ -449,5 +581,5 @@ def performance_metrics(outputs):
 # print("Specific Thrust (ST): {:.4f} N*s/kg".format(outputs["ST"]))
 
 def inputs_to_metrics(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
-    outputs = simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab)
+    outputs = simulate_turbojet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab)
     return performance_metrics(outputs)
