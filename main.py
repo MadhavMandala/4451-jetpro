@@ -4,6 +4,7 @@ from burner import burner, afterburner
 from turbine import turbine, fan_turbine
 from pump import pump
 from nozzles import turbineMixer, nozzleMixer, nozzle
+import numpy as np
 
 def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
 
@@ -72,11 +73,40 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
         "f": f,
         "w_f": w_f,
         "w_c": w_c,
-        "w_p": w_p
+        "w_p": w_p,
+        "p_a": p_a,
+        "T_a": T_a,
+        "M": M,
+        "Pr_c": Pr_c,
+        "Pr_f": Pr_f,
+        "Beta": Beta,
+        "b": b,
+        "sigma": sigma
     }
 
 outputs = simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
-print(outputs)
+# print(outputs)
 
 def performance_metrics(outputs):
-    tau = ()
+    u = outputs["M"] * np.sqrt(outputs["T_a"] * 8314.5 / 28.9644 * 1.4)
+    delta_drag = 263 * outputs["M"]**2 * outputs["p_a"] / 100000 * outputs["Beta"]**1.5
+    ST = (1 + outputs["f"] + outputs["f_ab"] + outputs["Beta"]*(1-outputs["sigma"])) * outputs["u_e"] + (outputs["Beta"]*outputs["sigma"]) * outputs["u_ef"] - (1+outputs["Beta"]) * u - delta_drag
+    TSFC = (outputs["f"] + outputs["f_ab"]) / ST
+    outputs["u"] = u
+    outputs["delta_drag"] = delta_drag
+    outputs["ST"] = ST
+    outputs["TSFC"] = TSFC
+    outputs["delta_H_r"] = 43.52 * 1000000
+    outputs["eta_o"] = u / TSFC / outputs["delta_H_r"]
+    dKEoverma = 0.5 * ((1 + outputs["f"] + outputs["f_ab"] + outputs["Beta"]*(1-outputs["sigma"])) * outputs["u_e"]**2 + (outputs["Beta"]*outputs["sigma"]) * outputs["u_ef"]**2 - (1+outputs["Beta"]) * u**2)
+    outputs["eta_th"] = dKEoverma / (outputs["delta_H_r"] * (outputs["f"] + outputs["f_ab"]))
+    outputs["eta_p"] = outputs["eta_o"] / outputs["eta_th"]
+    return outputs
+
+outputs = performance_metrics(outputs)
+print("Performance Metrics:")
+print("Overall Efficiency (eta_o): {:.4f}".format(outputs["eta_o"]))    
+print("Thermal Efficiency (eta_th): {:.4f}".format(outputs["eta_th"]))
+print("Propulsive Efficiency (eta_p): {:.4f}".format(outputs["eta_p"]))
+print("Thrust Specific Fuel Consumption (TSFC): {:.4f} kg/(kN*s)".format(outputs["TSFC"]*1000*3600))
+print("Specific Thrust (ST): {:.4f} N*s/kg".format(outputs["ST"]))

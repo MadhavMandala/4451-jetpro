@@ -171,7 +171,7 @@ T02 = 289.2
 P02 = 26.96
 Pa = 11
 sigma = 1
-print(nozzle(T07, P07, T02, P02, Pa, sigma))
+# print(nozzle(T07, P07, T02, P02, Pa, sigma))
 
 
 T051 = 1312
