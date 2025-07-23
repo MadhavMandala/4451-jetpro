@@ -2,9 +2,10 @@ from scipy.optimize import minimize, Bounds, LinearConstraint, NonlinearConstrai
 from simulator import inputs_to_metrics
 import numpy as np
 
-def optimize(T_a, p_a, M, ST, x0):
-    def vectorized_engine(inputs):
+def vectorized_engine(inputs):
         return inputs_to_metrics(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7], inputs[8], inputs[9])
+
+def optimize(T_a, p_a, M, ST, x0):
 
     # T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab
     lower_bounds = [T_a, p_a, M,      1, 1.15, 0,    0, 0,    0, 0]
@@ -41,6 +42,8 @@ def optimize(T_a, p_a, M, ST, x0):
     print("sigma:", res.x[7])
     print("f:", res.x[8])
     print("f_ab:", res.x[9])
+
+    return res.x
 
 if __name__ == "__main__":
     T_a = 288

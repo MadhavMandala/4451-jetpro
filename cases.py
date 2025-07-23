@@ -1,4 +1,4 @@
-from optimize import optimize
+from optimize import optimize, vectorized_engine
 import numpy as np
 
 # Takeoff conditions
@@ -10,7 +10,11 @@ M = 0.2
 ST = 1230
 x0 = np.array([T_a, p_a, M, 47, 1.15, 8.88, 0, 0, 0.03, 0])
 
-optimize(T_a, p_a, M, ST, x0)
+for i in range(10):
+    print(f"Iteration {i+1}/10:")
+    x0 = optimize(T_a, p_a, M, ST, x0)
+
+takeoff_metrics = vectorized_engine(x0)
 
 print("Optimization complete.")
 print("_________________________________")
@@ -24,7 +28,11 @@ M = 0.95
 ST = 1050
 x0 = np.array([T_a, p_a, M, 47, 1.15, 8.88, 0, 0, 0.03, 0])
 
-optimize(T_a, p_a, M, ST, x0)
+for i in range(10):
+    print(f"Iteration {i+1}/10:")
+    x0 = optimize(T_a, p_a, M, ST, x0)
+
+low_cruise_metrics = vectorized_engine(x0)
 
 print("Optimization complete.")
 print("_________________________________")
@@ -38,7 +46,11 @@ M = 0.95
 ST = 1460
 x0 = np.array([T_a, p_a, M, 47, 1.15, 8.88, 0, 0, 0.03, 0])
 
-optimize(T_a, p_a, M, ST, x0)
+for i in range(10):
+    print(f"Iteration {i+1}/10:")
+    x0 = optimize(T_a, p_a, M, ST, x0)
+
+high_cruise_metrics = vectorized_engine(x0)
 
 print("Optimization complete.")
 print("_________________________________")
@@ -52,7 +64,11 @@ M = 1.6
 ST = 874
 x0 = np.array([T_a, p_a, M, 47, 1.15, 8.88, 0, 0, 0.03, 0])
 
-optimize(T_a, p_a, M, ST, x0)
+for i in range(10):
+    print(f"Iteration {i+1}/10:")
+    x0 = optimize(T_a, p_a, M, ST, x0)
+
+supersonic_metrics = vectorized_engine(x0)
 
 print("Optimization complete.")
 print("_________________________________")
