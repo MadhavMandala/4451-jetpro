@@ -6,7 +6,7 @@ import numpy as np
 # and may not yield better results.
 # Set to 1 for quick testing, or increase for thorough optimization.
 # Consider using 2 iterations for low risk and high reward.
-iter_count = 2
+iter_count = 4
 
 # Takeoff conditions
 print("Takeoff conditions:")
@@ -15,7 +15,7 @@ T_a = 288
 p_a = 101300
 M = 0.2
 ST = 1230
-x0 = np.array([T_a, p_a, M, 47, 1.15, 8.88, 0, 0, 0.03, 0])
+x0 = np.array([T_a, p_a, M, 30, 1.5, 5, 0.1, 0.1, 0.03, 0.0025])
 
 for i in range(iter_count):
     print("_________________________________")
@@ -38,7 +38,7 @@ T_a = 223
 p_a = 26400
 M = 0.95
 ST = 1050
-x0 = np.array([T_a, p_a, M, 47, 1.15, 8.88, 0, 0, 0.03, 0])
+x0 = np.array([T_a, p_a, M, 30, 1.5, 5, 0.1, 0.1, 0.03, 0.0025])
 
 for i in range(iter_count):
     print("_________________________________")
@@ -61,7 +61,7 @@ T_a = 223
 p_a = 26400
 M = 0.95
 ST = 1460
-x0 = np.array([T_a, p_a, M, 47, 1.15, 8.88, 0, 0, 0.03, 0])
+x0 = np.array([T_a, p_a, M, 30, 1.5, 5, 0.1, 0.1, 0.03, 0.0025])
 
 for i in range(iter_count):
     print("_________________________________")
@@ -84,7 +84,7 @@ T_a = 216
 p_a = 9810
 M = 1.6
 ST = 874
-x0 = np.array([T_a, p_a, M, 47, 1.15, 8.88, 0, 0, 0.03, 0])
+x0 = np.array([T_a, p_a, M, 30, 1.5, 5, 0.1, 0.1, 0.03, 0.0025])
 
 for i in range(iter_count):
     print("_________________________________")
