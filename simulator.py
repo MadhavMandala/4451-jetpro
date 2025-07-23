@@ -106,6 +106,12 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
     P02 = P02 * 1000
     Pa = Pa * 1000
 
+    if sigma == 1:
+        # If sigma is 0, the core and bypass flows are completely mixed
+        T07 = T06
+        P07 = P06
+        return T07, P07
+
     # Finds estimated nozzle mixer output temp if both flows had the same Cp/R
     T07p = ( ( (1-sigma) * beta * T02 ) + ( (1+f+fab) * T06 ) ) / ( ((1-sigma) * beta) + (1+f+fab))
 
@@ -177,13 +183,6 @@ def nozzle(T07, P07, T02, P02, Pa, sigma):
     etans = 0.97
     Cps = CpoRs * Rs
 
-    # See if Core and Bypass are completely mixed
-    if (sigma == 0):
-        Tef = 0
-        uef = 0
-        Mef = 0
-
-
     # CORE Finds static exit temperature using isentropic relations
     Te = T07 * (1 - etanc * (1 - (Pa/P07)**(1/CpoRc))) 
 
@@ -210,7 +209,11 @@ def nozzle(T07, P07, T02, P02, Pa, sigma):
     # BYPASS Finds exit Mach number using above info
     Mef = uef / (gammas * Rs * Tef)**0.5
 
-
+    # See if Core and Bypass are completely mixed
+    if (sigma == 0):
+        Tef = Te
+        uef = 0
+        Mef = 0
 
     return Te, ue, Me, Tef, uef, Mef
 
@@ -338,7 +341,7 @@ def burner(p_0, T_0, f, b):
 # print(burner(404350, 657.9, 0.025, 0.06))
 
 
-def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
+def simulate_turbofan_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
 
     p_01, T_01 = diffuser(p_a, T_a, M)
     # print("Diffuser: P_01 = {:.4f} Pa, T_01 = {:.4f} K".format(p_01, T_01))
@@ -418,7 +421,7 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
         "T_max_ab": T_max_ab
     }
 
-outputs = simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
+# outputs = simulate_turbofan_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
 # print(outputs)
 
 
@@ -568,14 +571,14 @@ def performance_metrics(outputs):
     outputs["eta_p"] = outputs["eta_o"] / outputs["eta_th"]
     return outputs
 
-outputs = performance_metrics(outputs)
-print("Performance Metrics:")
-print("Overall Efficiency (eta_o): {:.4f}".format(outputs["eta_o"]))    
-print("Thermal Efficiency (eta_th): {:.4f}".format(outputs["eta_th"]))
-print("Propulsive Efficiency (eta_p): {:.4f}".format(outputs["eta_p"]))
-print("Thrust Specific Fuel Consumption (TSFC): {:.4f} kg/(kN*s)".format(outputs["TSFC"]*1000*3600))
-print("Specific Thrust (ST): {:.4f} N*s/kg".format(outputs["ST"]))
+# outputs = performance_metrics(outputs)
+# print("Performance Metrics:")
+# print("Overall Efficiency (eta_o): {:.4f}".format(outputs["eta_o"]))    
+# print("Thermal Efficiency (eta_th): {:.4f}".format(outputs["eta_th"]))
+# print("Propulsive Efficiency (eta_p): {:.4f}".format(outputs["eta_p"]))
+# print("Thrust Specific Fuel Consumption (TSFC): {:.4f} kg/(kN*s)".format(outputs["TSFC"]*1000*3600))
+# print("Specific Thrust (ST): {:.4f} N*s/kg".format(outputs["ST"]))
 
 def inputs_to_metrics(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
-    outputs = simulate_turbojet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab)
+    outputs = simulate_turbofan_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab)
     return performance_metrics(outputs)

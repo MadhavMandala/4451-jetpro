@@ -22,7 +22,9 @@ def optimize(T_a, p_a, M, ST, x0):
         lambda x: vectorized_engine(x)["TSFC"],
         x0,
         bounds=bounds,
-        constraints=[Pr_const, Tb_const, Tb_ab_const, ST_const]
+        constraints=[Pr_const, Tb_const, Tb_ab_const, ST_const],
+        method='SLSQP',
+        options={'maxiter': 2000, 'ftol': 1e-9}
     )
     print(res.message)
     outputs = vectorized_engine(res.x)
@@ -44,11 +46,11 @@ def optimize(T_a, p_a, M, ST, x0):
     return res.x
 
 if __name__ == "__main__":
-    T_a = 223
-    p_a = 26400
-    M = 0.95
-    ST = 1050
-    x0 = np.array([T_a, p_a, M, 32.3529, 1.7, 1.7985, 0.15, 0, 0.0264, 0])
+    T_a = 288
+    p_a = 101300
+    M = 0.2
+    ST = 1230
+    x0 = np.array([T_a, p_a, M, 43.999371677849474, 1.2284430788878584, 9.199989342899539, 0.03115965308367105, 0.9999998205109654, 0.011547044952487978, 0.0008847290581548529])
 
     outputs = vectorized_engine(x0)
 
