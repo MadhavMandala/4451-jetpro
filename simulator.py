@@ -191,7 +191,7 @@ def nozzle(T07, P07, T02, P02, Pa, sigma):
     Te = T07 * (1 - etanc * (1 - (Pa/P07)**(1/CpoRc))) 
 
     # CORE Find exit velocity
-    ue = (2*Cpc*(T07-Te))**0.5
+    ue = np.sqrt((2*Cpc*(T07-Te)))
 
     # CORE Find R and gamma using CPG relations
     R = Cpc / CpoRc
@@ -312,13 +312,13 @@ def afterburner(p_0, T_0, f, f_ab):
     # Accepts the fan turbine exit stagnation pressure (Pa) and temperature (K),
     # the fuel-to-air ratio, and the afterburner fuel-to-air ratio.
     if f_ab == 0:
-        return p_0, T_0, f_ab
+        return p_0, T_0, f_ab, 2300
  
     Pr = 0.97
     mw = 28.9
     R = 8314.5 / mw
     dhr = 43.52 * 1000000
-    T_max = 2300
+    # T_max = 2300
     C_p = (3.50 + 0.720*(T_0/1000)**2 - 0.210*(T_0/1000)**3) * R
     eta = 0.96
 
@@ -326,11 +326,11 @@ def afterburner(p_0, T_0, f, f_ab):
     p_0_exit = p_0 * Pr
     T_0_exit = (eta*f_ab*dhr/C_p + (1+f)*T_0) / mass_ratio
 
-    if T_0_exit > T_max:
-        T_0_exit = T_max
-        f_ab = (T_0_exit/T_0 - 1) / ((eta*dhr/C_p/T_0) - T_0_exit/T_0)
+    # if T_0_exit > T_max:
+    #     T_0_exit = T_max
+    #     f_ab = (T_0_exit/T_0 - 1) / ((eta*dhr/C_p/T_0) - T_0_exit/T_0)
 
-    return p_0_exit, T_0_exit, f_ab
+    return p_0_exit, T_0_exit, f_ab, 2300
     # Returns the stagnation pressure (Pa), stagnation temperature (K), 
     # and afterburner fuel-to-air ratio.
 
@@ -338,7 +338,12 @@ def afterburner(p_0, T_0, f, f_ab):
 
 def burner(p_0, T_0, f, b):
     if f == 0:
-        return p_0, T_0, f
+        C_b = 700
+        b_max = 0.15
+        n = 0.6
+        T_max = 1400
+        T_max = T_max + C_b * (b / b_max) ** n
+        return p_0, T_0, f, T_max
  
     Pr = 0.95
     mw = 28.9
@@ -357,11 +362,11 @@ def burner(p_0, T_0, f, b):
     p_0_exit = p_0 * Pr
     T_0_exit = (eta*f*dhr/C_p + (1-b)*T_0) / mass_ratio
 
-    if T_0_exit > T_max:
-        T_0_exit = T_max
-        f = (T_0_exit/T_0 - 1) / ((eta*dhr/C_p/T_0) - T_0_exit/T_0)
+    # if T_0_exit > T_max:
+    #     T_0_exit = T_max
+    #     f = (T_0_exit/T_0 - 1) / ((eta*dhr/C_p/T_0) - T_0_exit/T_0)
 
-    return p_0_exit, T_0_exit, f
+    return p_0_exit, T_0_exit, f, T_max
 
 # print(burner(404350, 657.9, 0.025, 0.06))
 
@@ -377,7 +382,7 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
     p_03, T_03, w_c = compressor(p_02, T_02, Pr_c)
     # print("Compressor: p_03 = {:.4f} Pa, T_03 = {:.4f} K".format(p_03, T_03))
 
-    p_04, T_04, f = burner(p_03, T_03, f, b)
+    p_04, T_04, f, T_max = burner(p_03, T_03, f, b)
     # print("Burner: p_04 = {:.4f} Pa, T_04 = {:.4f} K".format(p_04, T_04))
 
     p_f1, p_f2, w_p = pump(p_a / 1000, p_03 / 1000, f, f_ab)
@@ -392,7 +397,7 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
     p_052, T_052 = fan_turbine(p_051m * 1000, T_051m, w_f * 1000, f)
     # print("Fan Turbine: p_052 = {:.4f} Pa, T_052 = {:.4f} K".format(p_052, T_052))
 
-    p_06, T_06, f_ab = afterburner(p_052, T_052, f, f_ab)
+    p_06, T_06, f_ab, T_max_ab = afterburner(p_052, T_052, f, f_ab)
     # print("Afterburner: p_06 = {:.4f} Pa, T_06 = {:.4f} K, f_ab = {:.4f}".format(p_06, T_06, f_ab))
 
     T_07, p_07 = nozzleMixer(T_06, p_06 / 1000, T_02, p_02 / 1000, p_a, sigma, Beta, f, f_ab)
@@ -441,7 +446,9 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
         "Pr_f": Pr_f,
         "Beta": Beta,
         "b": b,
-        "sigma": sigma
+        "sigma": sigma,
+        "T_max": T_max,
+        "T_max_ab": T_max_ab
     }
 
 # outputs = simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
