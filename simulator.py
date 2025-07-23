@@ -101,16 +101,13 @@ def turbineMixer(T051,P051,T03,b,f):
 # Nozzle Mixer: Feeds into the core nozzle
 def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
 
+    if sigma == 1:
+        return T06, P06
+
     MW = 28.9
     P06 = P06 * 1000
     P02 = P02 * 1000
     Pa = Pa * 1000
-
-    if sigma == 1:
-        # If sigma is 0, the core and bypass flows are completely mixed
-        T07 = T06
-        P07 = P06
-        return T07, P07
 
     # Finds estimated nozzle mixer output temp if both flows had the same Cp/R
     T07p = ( ( (1-sigma) * beta * T02 ) + ( (1+f+fab) * T06 ) ) / ( ((1-sigma) * beta) + (1+f+fab))
@@ -144,7 +141,7 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
 
     # Finds reversible stagnation pressure coming out of the mixer
     P07rev = P02 ** (mdot1/(mdot1+mdot2)) * P06 ** (mdot2/(mdot1+mdot2)) * (T07/T02) ** (CpoRs*(mdot1/(mdot1+mdot2))) * (T07/T06) ** (CpoRc*(mdot2/(mdot1+mdot2)))
-
+    
     if ((mdot1 < mdot2) & (mdot1 > 0)):
         mr = mdot2 / mdot1
         Prnm = np.exp(-Cnm / (1 + mr ** 0.5))
@@ -421,7 +418,7 @@ def simulate_turbofan_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
         "T_max_ab": T_max_ab
     }
 
-# outputs = simulate_turbofan_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
+# outputs = simulate_turbofan_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 1, 0.025, 0.005)
 # print(outputs)
 
 
