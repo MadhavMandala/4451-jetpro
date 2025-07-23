@@ -11,8 +11,21 @@ def optim_x(ins, func):
     x = func(*ins)
     return 1/vectorized_engine(x)["ST"]
 
-lower_bounds = np.array([])
-upper_bounds = np.array([])
+lower_bounds = lambda T, p, M: np.array([T, p, M, 0, 0, 0])
+upper_bounds = lambda T, p, M: np.array([T, p, M, 0.15, 0.05, 0.05])
 bounds = Bounds(lower_bounds, upper_bounds)
 
+x0 = lambda T, p, M: np.array([T, p, M, 0.1, 0.025, 0.005])
 
+Pr_const = NonlinearConstraint(lambda x: vectorized_engine(x)["Pr_c"] * vectorized_engine(x)["Pr_f"], 1, 55)
+Tb_const = NonlinearConstraint(lambda x: vectorized_engine(x)["T_04"] - vectorized_engine(x)["T_max"], -2401, 0)
+Tb_ab_const = NonlinearConstraint(lambda x: vectorized_engine(x)["T_06"] - vectorized_engine(x)["T_max_ab"], -2401, 0)
+
+minimizer = lambda T, p, M: minimize(
+        lambda x: optim_x(x, ),
+        x0,
+        bounds=bounds,
+        constraints=[Pr_const, Tb_const, Tb_ab_const],
+        method='SLSQP',
+        options={'maxiter': 2000, 'ftol': 1e-6}
+    )
