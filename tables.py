@@ -13,6 +13,9 @@ low_trans = vectorized_engine(x_low_trans)
 high_trans = vectorized_engine(x_high_trans)
 supersonic = vectorized_engine(x_super)
 
+print(high_trans["T_04"])
+print(high_trans["T_max"])
+
 # Part 2 Data
 takeoff_takeoff = evaluation.conditions_to_params(evaluation.takeoff_conditions, evaluation.x_takeoff)
 takeoff_low = evaluation.conditions_to_params(evaluation.takeoff_conditions, evaluation.x_low_trans)
@@ -33,3 +36,6 @@ super_takeoff = evaluation.conditions_to_params(evaluation.super_conditions, eva
 super_low = evaluation.conditions_to_params(evaluation.super_conditions, evaluation.x_low_trans)
 super_high = evaluation.conditions_to_params(evaluation.super_conditions, evaluation.x_high_trans)
 super_super = evaluation.conditions_to_params(evaluation.super_conditions, evaluation.x_super)
+
+# Part 3 Testing
+print(super_takeoff["ST"])

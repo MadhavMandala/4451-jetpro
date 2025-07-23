@@ -19,12 +19,12 @@ def optimize(T_a, p_a, M, ST, x0):
 
     # T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab
     res = minimize(
-        lambda x: vectorized_engine(x)["f_ab"],
+        lambda x: vectorized_engine(x)["TSFC"],
         x0,
         bounds=bounds,
         constraints=[Pr_const, Tb_const, Tb_ab_const, ST_const],
         method='SLSQP',
-        options={'maxiter': 2000, 'ftol': 1e-6}
+        options={'maxiter': 2000, 'ftol': 1e-3}
     )
     print(res.message)
     outputs = vectorized_engine(res.x)
