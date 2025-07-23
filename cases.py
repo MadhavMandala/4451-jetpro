@@ -33,13 +33,37 @@ iter_count = 3
 # print("Optimization complete.")
 # print("_________________________________")
 
-# Low cruise conditions
-print("Low cruise conditions:")
+# # Low cruise conditions
+# print("Low cruise conditions:")
+
+# T_a = 223
+# p_a = 26400
+# M = 0.95
+# ST = 1050
+# x0 = np.array([T_a, p_a, M, 30, 1.5, 2, 0.12, 0.1, 0.02, 0.005])
+# # x0 = np.array([T_a, p_a, M, 30, 1.5, 5, 0.1, 0.1, 0.03, 0.0025])
+
+# for i in range(iter_count):
+#     print("_________________________________")
+#     print(f"Iteration {i+1}/{iter_count}:")
+#     x0 = optimize(T_a, p_a, M, ST, x0)
+#     x0[0] = T_a
+#     x0[1] = p_a
+#     x0[2] = M
+#     x0 = x0.round(4)
+
+# low_cruise_metrics = vectorized_engine(x0)
+
+# print("Optimization complete.")
+# print("_________________________________")
+
+# High cruise conditions
+print("High cruise conditions:")
 
 T_a = 223
 p_a = 26400
 M = 0.95
-ST = 1050
+ST = 1460
 x0 = np.array([T_a, p_a, M, 30, 1.5, 5, 0.1, 0.1, 0.03, 0.0025])
 
 for i in range(iter_count):
@@ -51,33 +75,10 @@ for i in range(iter_count):
     x0[2] = M
     x0 = x0.round(4)
 
-low_cruise_metrics = vectorized_engine(x0)
+high_cruise_metrics = vectorized_engine(x0)
 
 print("Optimization complete.")
 print("_________________________________")
-
-# # High cruise conditions
-# print("High cruise conditions:")
-
-# T_a = 223
-# p_a = 26400
-# M = 0.95
-# ST = 1460
-# x0 = np.array([T_a, p_a, M, 30, 1.5, 5, 0.1, 0.1, 0.03, 0.0025])
-
-# for i in range(iter_count):
-#     print("_________________________________")
-#     print(f"Iteration {i+1}/{iter_count}:")
-#     x0 = optimize(T_a, p_a, M, ST, x0)
-#     x0[0] = T_a
-#     x0[1] = p_a
-#     x0[2] = M
-#     x0 = x0.round(4)
-
-# high_cruise_metrics = vectorized_engine(x0)
-
-# print("Optimization complete.")
-# print("_________________________________")
 
 # # Supersonic conditions
 # print("Supersonic conditions:")
