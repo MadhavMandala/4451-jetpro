@@ -1,6 +1,5 @@
 
 import numpy as np
-import math
 
 def turbine(p_0, T_0, b, w, f):
     # Accepts the compressor exit pressure (Pa) and temperature (K), 
@@ -12,7 +11,6 @@ def turbine(p_0, T_0, b, w, f):
     mw = 28.9
     R = 8314.46 / mw
     C_p = C_p_over_R(T_0) * R
-    gamma = C_p / (C_p - R)
     eta_p = 0.94
 
     mass_ratio = 1 + f - b
@@ -280,8 +278,8 @@ def compressor(p_0, T_0, Pr):
 def afterburner(p_0, T_0, f, f_ab):
     # Accepts the fan turbine exit stagnation pressure (Pa) and temperature (K),
     # the fuel-to-air ratio, and the afterburner fuel-to-air ratio.
-    # if f_ab == 0:
-    #     return p_0, T_0, f_ab, 2300
+    if f_ab == 0:
+        return p_0, T_0, f_ab, 2300
  
     Pr = 0.97
     mw = 28.9
@@ -340,7 +338,7 @@ def burner(p_0, T_0, f, b):
 # print(burner(404350, 657.9, 0.025, 0.06))
 
 
-def simulate_turbofan_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
+def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
 
     p_01, T_01 = diffuser(p_a, T_a, M)
     # print("Diffuser: P_01 = {:.4f} Pa, T_01 = {:.4f} K".format(p_01, T_01))
