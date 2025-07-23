@@ -9,7 +9,7 @@ def turbine(p_0, T_0, b, w, f):
     
     C_p_over_R = lambda T_0:  3.38 + 0.700 * (T_0/1000) ** 2 - 0.200 * (T_0/1000) ** 3
     mw = 28.9
-    R = 8314.5 / mw
+    R = 8314.46 / mw
     C_p = C_p_over_R(T_0) * R
     gamma = C_p / (C_p - R)
     eta_p = 0.94
@@ -18,7 +18,7 @@ def turbine(p_0, T_0, b, w, f):
     T_0_exit = T_0 -  w/C_p/mass_ratio
     Tr = T_0_exit / T_0
     eta = (Tr - 1) / (Tr ** (1/eta_p) - 1)
-    p_0_exit = p_0 * (1 - (1 - Tr) / eta) ** (gamma / (gamma - 1))
+    p_0_exit = p_0 * (1 - (1 - Tr) / eta) ** (C_p_over_R(T_0))
 
     return p_0_exit, T_0_exit
     # Returns the exit stagnation pressure (Pa) and temperature (K) of the turbine.
@@ -132,24 +132,22 @@ def nozzleMixer(T06,P06,T02,P02,Pa,sigma,beta,f,fab):
     # Finds stagnation temp coming out of mixer
     T07 = ( ((1-sigma) * beta * Cps * T02) + ((1+f+fab) * Cpc * T06) ) / ( ((1-sigma) * beta * Cps) + ((1+f+fab) * Cpc) )
 
-    # Finds reversible stagnation pressure coming out of the mixer
-    exp1 = ((1-sigma) * beta) / ( ((1-sigma) * beta) + 1 + f + fab )
-    exp2 = (1 + f + fab) / (((1-sigma) * beta) + 1 + f + fab)
-    P07rev = (P02 ** exp1) * (P06 ** exp2) * ((T07/T06) ** (exp2 * CpoRc)) * ((T07/T02) ** (exp1 * CpoRs))
-
     # Finds adjusted stagnation pressure coming out of mixer
     Cnm = 2
     mdot1 = (1-sigma) * beta
     mdot2 = 1 + f + fab
 
+    # Finds reversible stagnation pressure coming out of the mixer
+    P07rev = P02 ** (mdot1/(mdot1+mdot2)) * P06 ** (mdot2/(mdot1+mdot2)) * (T07/T02) ** (CpoRs*(mdot1/(mdot1+mdot2))) * (T07/T06) ** (CpoRc*(mdot2/(mdot1+mdot2)))
+
     if ((mdot1 < mdot2) & (mdot1 > 0)):
         mr = mdot2 / mdot1
-        Prnm = math.e ** (-Cnm / (1 + mr ** 0.5))
-
+        Prnm = np.exp(-Cnm / (1 + mr ** 0.5))
         P07 = P07rev * Prnm
     else:
         mr = mdot1 / mdot2
-        P07 = P07rev
+        Prnm = np.exp(-Cnm / (1 + mr ** 0.5))
+        P07 = P07rev * Prnm
 
 
     P07 = P07 / 1000
@@ -182,9 +180,9 @@ def nozzle(T07, P07, T02, P02, Pa, sigma):
 
     # See if Core and Bypass are completely mixed
     if (sigma == 0):
-        Tef = 'NaN'
-        uef = 'NaN'
-        Mef = 'Nan'
+        Tef = 0
+        uef = 0
+        Mef = 0
 
 
     # CORE Finds static exit temperature using isentropic relations
@@ -281,8 +279,8 @@ def compressor(p_0, T_0, Pr):
 def afterburner(p_0, T_0, f, f_ab):
     # Accepts the fan turbine exit stagnation pressure (Pa) and temperature (K),
     # the fuel-to-air ratio, and the afterburner fuel-to-air ratio.
-    if f_ab == 0:
-        return p_0, T_0, f_ab, 2300
+    # if f_ab == 0:
+    #     return p_0, T_0, f_ab, 2300
  
     Pr = 0.97
     mw = 28.9
@@ -421,7 +419,7 @@ def simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
         "T_max_ab": T_max_ab
     }
 
-# outputs = simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
+outputs = simulate_jet_engine(220.0, 11000.0, 1.10, 15, 1.2, 1.5, 0.06, 0.72, 0.025, 0.005)
 # print(outputs)
 
 def performance_metrics(outputs):
@@ -440,13 +438,13 @@ def performance_metrics(outputs):
     outputs["eta_p"] = outputs["eta_o"] / outputs["eta_th"]
     return outputs
 
-# outputs = performance_metrics(outputs)
-# print("Performance Metrics:")
-# print("Overall Efficiency (eta_o): {:.4f}".format(outputs["eta_o"]))    
-# print("Thermal Efficiency (eta_th): {:.4f}".format(outputs["eta_th"]))
-# print("Propulsive Efficiency (eta_p): {:.4f}".format(outputs["eta_p"]))
-# print("Thrust Specific Fuel Consumption (TSFC): {:.4f} kg/(kN*s)".format(outputs["TSFC"]*1000*3600))
-# print("Specific Thrust (ST): {:.4f} N*s/kg".format(outputs["ST"]))
+outputs = performance_metrics(outputs)
+print("Performance Metrics:")
+print("Overall Efficiency (eta_o): {:.4f}".format(outputs["eta_o"]))    
+print("Thermal Efficiency (eta_th): {:.4f}".format(outputs["eta_th"]))
+print("Propulsive Efficiency (eta_p): {:.4f}".format(outputs["eta_p"]))
+print("Thrust Specific Fuel Consumption (TSFC): {:.4f} kg/(kN*s)".format(outputs["TSFC"]*1000*3600))
+print("Specific Thrust (ST): {:.4f} N*s/kg".format(outputs["ST"]))
 
 def inputs_to_metrics(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab):
     outputs = simulate_jet_engine(T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab)

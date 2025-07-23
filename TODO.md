@@ -4,7 +4,7 @@ Future:
 - [x] Verify sigma = 0.72 test case
 - [x] Calculate performance parameters
 - [x] Write an optimizable version of the code
-- [ ] Write an optimizer
+- [x] Write an optimizer
 
 Ian:
 - [x] Fan
