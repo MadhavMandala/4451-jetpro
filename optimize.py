@@ -8,8 +8,8 @@ def vectorized_engine(inputs):
 def optimize(T_a, p_a, M, ST, x0):
 
     # T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab
-    lower_bounds = [T_a, p_a, M, 1, 1.15, 0, 0.15, 0, 0, 0]
-    upper_bounds = [T_a, p_a, M, 55, 1.7, 15, 0.15, 0, 0.05, 0.05]
+    lower_bounds = [T_a, p_a, M, 1, 1, 0, 0, 0, 0, 0]
+    upper_bounds = [T_a, p_a, M, 55, 1, 0, 0.15, 0, 0.05, 0.05]
     bounds = Bounds(lower_bounds, upper_bounds)
 
     Pr_const = NonlinearConstraint(lambda x: vectorized_engine(x)["Pr_c"] * vectorized_engine(x)["Pr_f"], 1, 55)
@@ -19,12 +19,11 @@ def optimize(T_a, p_a, M, ST, x0):
 
     # T_a, p_a, M, Pr_c, Pr_f, Beta, b, sigma, f, f_ab
     res = minimize(
-        lambda x: vectorized_engine(x)["TSFC"],
+        lambda x: vectorized_engine(x)["f_ab"],
         x0,
         bounds=bounds,
         constraints=[Pr_const, Tb_const, Tb_ab_const, ST_const],
-        method='SLSQP',
-        options={'maxiter': 20000, 'ftol': 1e-9}
+        method='trust-constr'
     )
     print(res.message)
     outputs = vectorized_engine(res.x)
@@ -46,14 +45,14 @@ def optimize(T_a, p_a, M, ST, x0):
     return res.x
 
 if __name__ == "__main__":
-    T_a = 216
-    p_a = 9810
-    M = 1.6
-    ST = 874
-    x = np.array([T_a, p_a, M, 35.60106161672914, 1.15, 1.280819092652712, 0.15, 0.0, 0.02729479, 0])
+    T_a = 288
+    p_a = 101300
+    M = 0.2
+    ST = 1230
+    x = np.array([T_a, p_a, M, 42.217638036620976, 1, 0, 0.15, 0, 0.02789954000189713, 0.02860040271923639])
 
     outputs = vectorized_engine(x)
 
-    # print(outputs)
+    print(outputs)
     print("TSFC:", outputs["TSFC"]*3600*1000)  # Convert to kg/kN/h
     print("Specific Thrust:", outputs["ST"]/1000)

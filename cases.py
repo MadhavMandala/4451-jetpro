@@ -80,14 +80,37 @@ iter_count = 5
 # print("Optimization complete.")
 # print("_________________________________")
 
-# Supersonic conditions
-print("Supersonic conditions:")
+# # Supersonic conditions
+# print("Supersonic conditions:")
+
+# T_a = 216
+# p_a = 9810
+# M = 1.6
+# ST = 874
+# x0 = np.array([T_a, p_a, M, 30, 1.15, 1.2, 0.1, 0, 0.03, 0.0025])
+
+# for i in range(iter_count):
+#     print("_________________________________")
+#     print(f"Iteration {i+1}/{iter_count}:")
+#     x0 = optimize(T_a, p_a, M, ST, x0)
+#     x0[0] = T_a
+#     x0[1] = p_a
+#     x0[2] = M
+#     x0 = x0.round(4)
+
+# supersonic_metrics = vectorized_engine(x0)
+
+# print("Optimization complete.")
+# print("_________________________________")
+
+# Supersonic turbojet
+print("Supersonic turbojet conditions:")
 
 T_a = 216
 p_a = 9810
 M = 1.6
 ST = 874
-x0 = np.array([T_a, p_a, M, 30, 1.15, 1.2, 0.1, 0, 0.03, 0.0025])
+x0 = np.array([T_a, p_a, M, 25, 1, 0, 0.07, 0, 0.03, 0.015])
 
 for i in range(iter_count):
     print("_________________________________")
